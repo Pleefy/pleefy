@@ -1,99 +1,81 @@
 'use client';
-import { useEffect, useState } from 'react'
-import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/card'
-import { Input } from '../../components/ui/input'
-import { Textarea } from '../../components/ui/textarea'
-import { Button } from '../../components/ui/button'
-import { Label } from '../../components/ui/label'
-
-type Data = {
-  companyName: string;
-  audience: string;
-  goals: string;
-  objections: string;
-  usps: string;
-  ctas: string;
-  tone: string;
-  coaching: string;
-}
-
-const steps = [
-  { key:'companyName', label:'Bedrijfsnaam' },
-  { key:'audience', label:'Doelgroep(en)' },
-  { key:'goals', label:'Doelen per gesprek' },
-  { key:'objections', label:'Veelvoorkomende bezwaren' },
-  { key:'usps', label:'USP’s' },
-  { key:'ctas', label:'Call-to-Actions' },
-  { key:'tone', label:'Tone of voice' },
-  { key:'coaching', label:'Coaching focus' },
-] as const
+import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { getOnboarding, setOnboarding } from "@/lib/data";
 
 export default function OnboardingPage(){
-  const [data,setData] = useState<Data>({ companyName:'', audience:'MKB beslissers; Operations managers', goals:'Afspraak inplannen; Upsell; CSAT verhogen', objections:'Te duur; Geen tijd; We hebben al iets', usps:'Realtime script; AI-coach; CRM-koppeling', ctas:'Plan demo; Bevestig afspraak; Escaleren', tone:'enthousiast', coaching:'Objection handling; Closing; Empathie' })
-  const [i,setI] = useState(0)
+  const [step,setStep] = useState(1);
+  const [form, setForm] = useState({ industry:"", targetAudience:"", goals:"", objections:"", usps:"" });
 
-  useEffect(()=>{ const s = localStorage.getItem('pleefy-onboarding'); if (s) setData(JSON.parse(s)) },[])
-  useEffect(()=>{ localStorage.setItem('pleefy-onboarding', JSON.stringify(data)) },[data])
+  useEffect(()=>{
+    const existing = getOnboarding();
+    if (existing) setForm(existing);
+  },[]);
 
-  function exportCSV(){
-    const headers = Object.keys(data)
-    const values = headers.map(h=>JSON.stringify((data as any)[h]))
-    const csv = headers.join(',')+'\n'+values.join(',')
-    const blob = new Blob([csv], {type:'text/csv'})
-    const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='onboarding.csv'; a.click(); URL.revokeObjectURL(url)
-  }
-
-  const step = steps[i]
-  const isTextArea = step.key!=='companyName' && step.key!=='tone'
+  function next(){ setStep(s=>Math.min(3, s+1)); }
+  function prev(){ setStep(s=>Math.max(1, s-1)); }
+  function save(){ setOnboarding(form); alert("Onboarding opgeslagen"); }
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Onboarding</h2>
-        <Button variant="secondary" onClick={exportCSV}>⬇️ Export</Button>
-      </div>
-
+      <h1 className="text-2xl font-semibold">Onboarding</h1>
       <Card>
-        <CardHeader>
-          <CardTitle>Stap {i+1} / {steps.length} – {step.label}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4">
-            {step.key==='companyName' && (<div><Label>Bedrijfsnaam</Label><Input value={data.companyName} onChange={e=>setData({...data, companyName:e.target.value})} placeholder="Pleefy BV" /></div>)}
-            {step.key==='tone' && (
+        <CardHeader><CardTitle>Stap {step} van 3</CardTitle></CardHeader>
+        <CardContent className="space-y-6">
+          {step===1 && (
+            <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <Label>Tone of voice</Label>
-                <select className="h-10 rounded-xl border px-3" value={data.tone} onChange={e=>setData({...data, tone:e.target.value})}>
-                  <option value="enthousiast">Enthousiast</option>
-                  <option value="informeel">Informeel</option>
-                  <option value="formeel">Formeel</option>
-                  <option value="neutraal">Neutraal</option>
-                </select>
+                <Label>Branche / Industry</Label>
+                <Input value={form.industry} onChange={e=>setForm({...form, industry:e.target.value})} placeholder="Bijv. Telecom, SaaS, Energie" />
               </div>
-            )}
-            {isTextArea && (<div><Label>{step.label}</Label><Textarea value={(data as any)[step.key]} onChange={e=>setData({...data, [step.key]: e.target.value})} placeholder="Scheid items met ; (puntkomma)" /></div>)}
-          </div>
+              <div>
+                <Label>Doelgroep</Label>
+                <Input value={form.targetAudience} onChange={e=>setForm({...form, targetAudience:e.target.value})} placeholder="Bijv. MKB-eigenaren in NL" />
+              </div>
+            </div>
+          )}
+          {step===2 && (
+            <div className="grid gap-6">
+              <div>
+                <Label>Doelen</Label>
+                <Textarea value={form.goals} onChange={e=>setForm({...form, goals:e.target.value})} placeholder="Welke doelen wil je bereiken? (afspraken, NPS, first-call-resolve)" />
+              </div>
+              <div>
+                <Label>Bezwaren</Label>
+                <Textarea value={form.objections} onChange={e=>setForm({...form, objections:e.target.value})} placeholder="Wat hoor je vaak als bezwaar?" />
+              </div>
+            </div>
+          )}
+          {step===3 && (
+            <div className="grid gap-6">
+              <div>
+                <Label>Unique Selling Points (USP's)</Label>
+                <Textarea value={form.usps} onChange={e=>setForm({...form, usps:e.target.value})} placeholder="Wat maakt jullie anders/beter?" />
+              </div>
+              <div className="rounded-xl bg-gray-50 p-4 text-sm text-gray-700">
+                <div className="font-semibold mb-2">Samenvatting</div>
+                <div>Branche: {form.industry || "-"}</div>
+                <div>Doelgroep: {form.targetAudience || "-"}</div>
+                <div>Doelen: {form.goals || "-"}</div>
+                <div>Bezwaren: {form.objections || "-"}</div>
+                <div>USPs: {form.usps || "-"}</div>
+              </div>
+            </div>
+          )}
 
-          <div className="mt-6 flex justify-between">
-            <Button variant="secondary" onClick={()=>setI(Math.max(0,i-1))}>Vorige</Button>
+          <div className="flex justify-between">
+            <Button variant="secondary" onClick={prev} disabled={step===1}>Terug</Button>
             <div className="flex gap-2">
-              <Button onClick={()=>setI(Math.min(steps.length-1,i+1))}>{i===steps.length-1?'Afronden':'Volgende'}</Button>
+              <Button variant="outline" onClick={save}>Opslaan</Button>
+              {step<3 ? <Button onClick={next}>Volgende</Button> : <Button onClick={save}>Afronden</Button>}
             </div>
           </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader><CardTitle>Samenvatting</CardTitle></CardHeader>
-        <CardContent className="grid md:grid-cols-2 gap-4">
-          {Object.entries(data).map(([k,v]) => (
-            <div key={k} className="border rounded-xl p-4">
-              <div className="text-xs text-muted-foreground uppercase">{k}</div>
-              <div className="font-medium mt-1 whitespace-pre-wrap">{String(v)}</div>
-            </div>
-          ))}
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

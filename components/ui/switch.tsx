@@ -1,9 +1,14 @@
-'use client';
-import * as React from "react"
-export function Switch({ checked, onChange }: { checked: boolean; onChange: (v:boolean)=>void }){
+import * as React from "react";
+import { cn } from "@/lib/utils";
+export function Switch({ checked, onChange, className }: {checked:boolean; onChange:(v:boolean)=>void; className?:string}){
   return (
-    <button onClick={()=>onChange(!checked)} className={"inline-flex h-6 w-11 items-center rounded-full "+(checked?"bg-primary":"bg-muted")}>
-      <span className={"h-5 w-5 bg-white rounded-full transition ml-1 "+(checked?"translate-x-5":"")}></span>
+    <button
+      onClick={() => onChange(!checked)}
+      className={cn("w-12 h-6 rounded-full transition-colors", checked ? "bg-black" : "bg-gray-300", className)}
+      aria-pressed={checked}
+    >
+      <span className={cn("block w-5 h-5 bg-white rounded-full transform transition-transform translate-y-[2px]",
+        checked ? "translate-x-[26px]" : "translate-x-[2px]")} />
     </button>
-  )
+  );
 }

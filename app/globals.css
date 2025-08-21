@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: 'Inter', sans-serif;
+:root {
+  --radius: 1rem;
 }
+html, body { height: 100%; }
+body { font-family: ui-sans-serif, system-ui, -apple-system, "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+.container { max-width: 1200px; margin: 0 auto; }
+.card { @apply rounded-2xl bg-white shadow-card border border-gray-200; }
