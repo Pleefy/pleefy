@@ -4,26 +4,19 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "postinstall": "tailwindcss -v > /dev/null 2>&1 || true"
+    "start": "next start"
   },
   "dependencies": {
-    "autoprefixer": "10.4.19",
-    "class-variance-authority": "0.7.0",
-    "clsx": "2.1.1",
-    "lucide-react": "0.394.0",
     "next": "14.2.5",
-    "postcss": "8.4.31",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "recharts": "2.10.3",
-    "tailwind-merge": "2.3.0",
-    "tailwindcss": "3.4.7",
-    "xlsx": "0.18.5"
+    "xlsx": "0.18.5",
+    "classnames": "2.5.1"
   },
   "devDependencies": {
-    "@types/node": "20.11.30",
-    "@types/react": "18.2.45",
-    "typescript": "5.3.3"
+    "autoprefixer": "10.4.20",
+    "postcss": "8.4.41",
+    "tailwindcss": "3.4.10"
   }
 }
