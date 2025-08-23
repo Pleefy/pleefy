@@ -1,62 +1,62 @@
+
 "use client";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { successRate, byAgent, conversations } from "@/lib/data";
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, PieChart, Pie, Cell } from "recharts";
+import Button from "@/components/ui/button";
+import { successRate, byMedewerker, byDay } from "@/lib/data";
+import { ResponsiveContainer, PieChart, Pie, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, LineChart, Line } from "recharts";
 import Link from "next/link";
 
 export default function Dashboard() {
-  const rate = successRate(conversations);
-  const agentStats = byAgent(conversations);
-  const pieData = [
-    { name: "Succes", value: conversations.filter(c => c.success).length },
-    { name: "Niet succes", value: conversations.filter(c => !c.success).length },
-  ];
-
+  const rate = successRate();
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-semibold">Dashboard</h1>
-        <div className="flex gap-3">
-          <Link href="/onboarding"><Button variant="outline">Onboarding</Button></Link>
-          <Link href="/conversations"><Button>Bekijk gesprekken</Button></Link>
+        <div className="flex gap-2">
+          <Link href="/onboarding"><Button>Onboarding</Button></Link>
+          <Link href="/conversations"><Button className="bg-brand text-white">Naar gesprekken</Button></Link>
         </div>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card>
           <CardHeader><CardTitle>Succesratio</CardTitle></CardHeader>
-          <CardContent>
-            <div className="flex items-baseline gap-3">
-              <div className="text-4xl font-bold">{rate}%</div>
-              <div className="text-sm text-gray-500">op basis van {conversations.length} gesprekken</div>
-            </div>
-            <div className="mt-4 h-48">
-              <ResponsiveContainer>
-                <PieChart>
-                  <Pie data={pieData} dataKey="value" nameKey="name" outerRadius={70} label>
-                    {pieData.map((_, i) => <Cell key={i} />)}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
+          <CardContent style={{height:320}}>
+            <ResponsiveContainer>
+              <PieChart>
+                <Pie data={[{name:'Succes', value: rate},{name:'Niet', value: 100-rate}]} dataKey="value" nameKey="name" outerRadius={110} label />
+              </PieChart>
+            </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        <Card className="md:col-span-2">
-          <CardHeader><CardTitle>Top medewerkers</CardTitle></CardHeader>
-          <CardContent>
-            <div className="h-56">
-              <ResponsiveContainer>
-                <BarChart data={agentStats}>
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="rate" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+        <Card className="lg:col-span-2">
+          <CardHeader><CardTitle>Successen per medewerker</CardTitle></CardHeader>
+          <CardContent style={{height:320}}>
+            <ResponsiveContainer>
+              <BarChart data={byMedewerker()}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,.06)" />
+                <XAxis dataKey="name" />
+                <YAxis allowDecimals={false} />
+                <Tooltip />
+                <Bar dataKey="value" />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        <Card className="lg:col-span-3">
+          <CardHeader><CardTitle>Trend per dag</CardTitle></CardHeader>
+          <CardContent style={{height:300}}>
+            <ResponsiveContainer>
+              <LineChart data={byDay()}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,.06)" />
+                <XAxis dataKey="date" />
+                <YAxis allowDecimals={false} />
+                <Tooltip />
+                <Line type="monotone" dataKey="value" />
+              </LineChart>
+            </ResponsiveContainer>
           </CardContent>
         </Card>
       </div>

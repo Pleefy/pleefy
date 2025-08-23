@@ -1,6 +1,4 @@
-import React from "react";
-import { cn } from "./cn";
-export const Input = React.forwardRef(({ className, ...props }, ref) => (
-  <input ref={ref} className={cn("input", className)} {...props} />
-));
-Input.displayName = "Input";
+
+export default function Input({ className = "", ...props }) {
+  return <input className={`w-full rounded-xl bg-black/20 ring-apple px-3 py-2 placeholder:opacity-60 ${className}`} {...props} />;
+}
