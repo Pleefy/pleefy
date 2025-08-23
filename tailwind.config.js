@@ -2,24 +2,28 @@
 module.exports = {
   content: [
     "./app/**/*.{js,jsx}",
-    "./components/**/*.{js,jsx}"
+    "./components/**/*.{js,jsx}",
   ],
   theme: {
     extend: {
-      fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'] },
+      fontFamily: {
+        inter: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif']
+      },
       colors: {
         brand: {
-          DEFAULT: "#0a0a0a",
-          fg: "#111827"
+          50: "#f5f7ff",
+          100: "#e8ecff",
+          200: "#cfd8ff",
+          300: "#aab9ff",
+          400: "#7e92ff",
+          500: "#5c73ff",
+          600: "#4459e6",
+          700: "#3849b3",
+          800: "#2f3d8f",
+          900: "#2a366f"
         }
-      },
-      borderRadius: {
-        '2xl': '1rem'
-      },
-      boxShadow: {
-        soft: "0 1px 2px rgba(0,0,0,0.04), 0 4px 24px rgba(0,0,0,0.06)"
       }
     },
   },
-  plugins: []
-}
+  plugins: [],
+};

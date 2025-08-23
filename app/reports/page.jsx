@@ -1,65 +1,75 @@
 "use client";
-import React from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "../../components/ui/card";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, CartesianGrid } from "recharts";
-import { conversations as seed, aggregateByAgent } from "../../lib/mock";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { conversations, byAgent, downloadCSV, downloadXLSX, weeklySummary } from "@/lib/data";
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, BarChart, Bar } from "recharts";
 
-function useConversations() {
-  const [data, setData] = React.useState(seed);
-  React.useEffect(() => {
-    const raw = localStorage.getItem("pleefy.conversations");
-    if (raw) {
-      try { setData(JSON.parse(raw)); } catch {}
-    }
-  }, []);
-  return data;
+function groupByDate(rows) {
+  const map = {};
+  for (const r of rows) {
+    map[r.date] = map[r.date] || { date: r.date, total: 0, success: 0 };
+    map[r.date].total += 1;
+    if (r.success) map[r.date].success += 1;
+  }
+  return Object.values(map).sort((a,b) => a.date.localeCompare(b.date));
 }
 
-export default function ReportsPage() {
-  const data = useConversations();
-  const byAgent = aggregateByAgent(data);
-  const overall = [
-    { name: "Succes", value: data.filter(d => d.thumbs === "up").length },
-    { name: "Niet-succes", value: data.filter(d => d.thumbs === "down").length }
-  ];
+export default function Reports() {
+  const byDay = groupByDate(conversations);
+  const agents = byAgent(conversations);
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Rapportages</h1>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader><CardTitle>Per agent</CardTitle></CardHeader>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-semibold">Rapportages</h1>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => downloadCSV("rapport.csv", conversations)}>Export CSV</Button>
+          <Button onClick={() => downloadXLSX("rapport.xlsx", conversations)}>Export Excel</Button>
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-3 gap-6">
+        <Card className="md:col-span-2">
+          <CardHeader><CardTitle>Gesprekken per dag</CardTitle></CardHeader>
           <CardContent>
-            <div className="h-80">
+            <div className="h-64">
               <ResponsiveContainer>
-                <BarChart data={byAgent}>
+                <LineChart data={byDay}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="agent" />
+                  <XAxis dataKey="date" />
                   <YAxis />
                   <Tooltip />
-                  <Bar dataKey="up" fill="#111111" />
-                  <Bar dataKey="down" fill="#94a3b8" />
+                  <Line type="monotone" dataKey="total" />
+                  <Line type="monotone" dataKey="success" />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader><CardTitle>Succes per medewerker</CardTitle></CardHeader>
+          <CardContent>
+            <div className="h-64">
+              <ResponsiveContainer>
+                <BarChart data={agents}>
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="rate" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader><CardTitle>Overall succes</CardTitle></CardHeader>
-          <CardContent>
-            <div className="h-80">
-              <ResponsiveContainer>
-                <PieChart>
-                  <Pie data={overall} dataKey="value" nameKey="name" outerRadius={110} label>
-                    {overall.map((entry, index) => <Cell key={index} fill={index===0?"#111111":"#94a3b8"} />)}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
       </div>
+
+      <Card>
+        <CardHeader><CardTitle>Wekelijkse transcriptie-samenvatting</CardTitle></CardHeader>
+        <CardContent>
+          <pre className="whitespace-pre-wrap text-sm text-gray-700">{weeklySummary}</pre>
+        </CardContent>
+      </Card>
     </div>
   );
 }

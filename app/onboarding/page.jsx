@@ -1,63 +1,68 @@
 "use client";
-import React from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "../../components/ui/card";
-import { Button } from "../../components/ui/button";
+import { useEffect, useState } from "react";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
-export default function Onboarding(){
-  const [form, setForm] = React.useState({
+export default function Onboarding() {
+  const [form, setForm] = useState({
     doelgroep: "",
     doelen: "",
-    usps: "",
     bezwaren: "",
-    tone: "professioneel & menselijk"
+    usps: "",
+    coachingskaders: "",
   });
-  const [weekly, setWeekly] = React.useState("");
+  const [saved, setSaved] = useState(false);
 
-  React.useEffect(()=>{
-    const raw = localStorage.getItem("pleefy.onboarding");
-    if (raw) try { const d = JSON.parse(raw); setForm(d.form||form); setWeekly(d.weekly||""); } catch {}
+  useEffect(() => {
+    const raw = localStorage.getItem("pleefy:onboarding");
+    if (raw) setForm(JSON.parse(raw));
   }, []);
 
-  function save(){
-    localStorage.setItem("pleefy.onboarding", JSON.stringify({ form, weekly }));
-    alert("Onboarding opgeslagen ✔︎");
+  function save() {
+    localStorage.setItem("pleefy:onboarding", JSON.stringify(form));
+    setSaved(true);
+    setTimeout(() => setSaved(false), 1500);
+  }
+
+  function onChange(e) {
+    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
   }
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Onboarding</h1>
-      <Card>
-        <CardHeader><CardTitle>Bedrijfsprofiel</CardTitle></CardHeader>
-        <CardContent className="space-y-4">
-          {["doelgroep","doelen","usps","bezwaren","tone"].map((k)=> (
-            <div key={k} className="space-y-1">
-              <label className="text-sm text-gray-600 block capitalize">{k}</label>
-              <textarea
-                className="w-full border rounded-xl p-3"
-                rows={k==="usps"||k==="bezwaren"?4:3}
-                value={form[k]}
-                onChange={e=>setForm({...form,[k]:e.target.value})}
-                placeholder={k==="usps"?"Wat maakt jullie uniek?":""}
-              />
-            </div>
-          ))}
-          <Button onClick={save}>Opslaan</Button>
-        </CardContent>
-      </Card>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-semibold">Onboarding</h1>
+        <Button onClick={save}>{saved ? "Opgeslagen ✓" : "Opslaan"}</Button>
+      </div>
 
       <Card>
-        <CardHeader><CardTitle>Wekelijkse samenvatting & coaching</CardTitle></CardHeader>
-        <CardContent className="space-y-3">
-          <textarea
-            className="w-full border rounded-xl p-3"
-            rows={6}
-            value={weekly}
-            onChange={e=>setWeekly(e.target.value)}
-            placeholder="Noteer de samenvatting van deze week en coachingspunten..."
-          />
-          <div className="text-sm text-gray-500">De manager kan dit elke week checken en aanpassen.</div>
-          <Button onClick={save}>Opslaan</Button>
+        <CardHeader><CardTitle>Input voor PLEVI</CardTitle></CardHeader>
+        <CardContent className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium mb-1">Doelgroep</label>
+            <Input name="doelgroep" value={form.doelgroep} onChange={onChange} placeholder="Bijv. SaaS scale-ups in de Benelux" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Doelen</label>
+            <Input name="doelen" value={form.doelen} onChange={onChange} placeholder="Bijv. meer demo-afspraken, hogere win-rate" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Bezwaren</label>
+            <Input name="bezwaren" value={form.bezwaren} onChange={onChange} placeholder="Bijv. prijs, implementatietijd, integratie" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">USP's</label>
+            <Input name="usps" value={form.usps} onChange={onChange} placeholder="Bijv. realtime coaching, CRM-integraties" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Coachingskaders (wekelijks)</label>
+            <Input name="coachingskaders" value={form.coachingskaders} onChange={onChange} placeholder="Bijv. focus op discovery, samenvatten, afsluiten" />
+          </div>
         </CardContent>
+        <CardFooter>
+          <div className="text-sm text-gray-500">Je kunt dit later altijd aanpassen. PLEVI gebruikt dit voor realtime scripts en coaching.</div>
+        </CardFooter>
       </Card>
     </div>
   );
