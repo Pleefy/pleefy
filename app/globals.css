@@ -5,36 +5,26 @@
 :root {
   --bg: #ffffff;
   --fg: #0f172a;
-  --muted: #64748b;
-  --card: #ffffff;
+  --muted: #6b7280;
   --border: #e5e7eb;
 }
 
-html, body {
-  height: 100%;
-}
+* { border-color: var(--border); }
 
-body {
-  background: var(--bg);
-  color: var(--fg);
-}
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--fg); }
 
-.container {
-  @apply max-w-7xl mx-auto px-6;
-}
+.container { @apply max-w-7xl mx-auto px-6; }
 
-.card {
-  @apply bg-white border border-gray-200 rounded-2xl shadow-sm;
-}
+/* shadcn-like primitives */
+.btn { @apply inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50 h-9 px-4 border border-gray-200 bg-white hover:bg-gray-50; }
+.btn-primary { @apply bg-black text-white hover:bg-neutral-900 border-transparent; }
+.card { @apply bg-white border rounded-2xl shadow-soft; }
+.input { @apply w-full rounded-xl border bg-white px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-black; }
+.label { @apply text-sm text-gray-600 mb-1 block; }
 
-.btn {
-  @apply inline-flex items-center justify-center rounded-xl px-3 py-2 text-sm font-medium border border-gray-200 bg-white hover:bg-gray-50;
-}
-
-.btn-primary {
-  @apply bg-black text-white hover:bg-gray-900;
-}
-
-.badge {
-  @apply inline-flex items-center rounded-full border border-gray-200 px-2 py-0.5 text-xs text-gray-700;
-}
+.badge { @apply inline-flex items-center rounded-full border px-2 py-0.5 text-xs text-gray-700; }
+.table { @apply w-full text-sm; }
+.th { @apply text-left text-gray-500 py-2 pr-3 font-medium; }
+.td { @apply py-2 pr-3; }
+.tr { @apply hover:bg-gray-50; }
