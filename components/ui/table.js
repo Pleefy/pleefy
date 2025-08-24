@@ -1,9 +1,6 @@
-
-export function Table({ children, className = "" }) {
-  return <table className={`w-full text-sm ${className}`}>{children}</table>;
-}
-export function THead({ children }) { return <thead className="text-left text-xs uppercase muted">{children}</thead> }
-export function TBody({ children }) { return <tbody className="divide-y divide-white/5">{children}</tbody> }
-export function TR({ children }) { return <tr className="hover:bg-white/5">{children}</tr> }
-export function TH({ children, className = "" }) { return <th className={`px-3 py-2 ${className}`}>{children}</th> }
-export function TD({ children, className = "" }) { return <td className={`px-3 py-2 ${className}`}>{children}</td> }
+export function Table({ children }) { return <table className="w-full text-sm">{children}</table>; }
+export function THead({ children }) { return <thead className="text-left text-gray-500">{children}</thead>; }
+export function TBody({ children }) { return <tbody className="divide-y">{children}</tbody>; }
+export function TR({ children }) { return <tr className="hover:bg-gray-50">{children}</tr>; }
+export function TH({ children }) { return <th className="py-3 pr-3">{children}</th>; }
+export function TD({ children }) { return <td className="py-3 pr-3">{children}</td>; }

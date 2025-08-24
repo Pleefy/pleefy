@@ -1,13 +1,14 @@
+import { cn } from "./utils";
 
-export function Card({ className = "", children, ...props }) {
-  return <div className={`panel ring-apple rounded-2xl ${className}`} {...props}>{children}</div>;
+export function Card({ className, ...props }) {
+  return <div className={cn("rounded-2xl border bg-white shadow-sm", className)} {...props} />;
 }
-export function CardHeader({ className = "", children, ...props }) {
-  return <div className={`p-4 border-b border-white/5 ${className}`} {...props}>{children}</div>;
+export function CardHeader({ className, ...props }) {
+  return <div className={cn("p-5 border-b", className)} {...props} />;
 }
-export function CardTitle({ className = "", children, ...props }) {
-  return <h3 className={`text-base font-semibold ${className}`} {...props}>{children}</h3>;
+export function CardTitle({ className, ...props }) {
+  return <h3 className={cn("font-medium", className)} {...props} />;
 }
-export function CardContent({ className = "", children, ...props }) {
-  return <div className={`p-4 ${className}`} {...props}>{children}</div>;
+export function CardContent({ className, ...props }) {
+  return <div className={cn("p-5", className)} {...props} />;
 }

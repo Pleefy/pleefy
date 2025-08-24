@@ -1,6 +1,5 @@
-module.exports = {
-  reactStrictMode: true,
-  experimental: {
-    typedRoutes: true
-  }
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true
 };
+module.exports = nextConfig;

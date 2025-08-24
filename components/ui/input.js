@@ -1,4 +1,15 @@
+import { cn } from "./utils";
+import * as React from "react";
 
-export default function Input({ className = "", ...props }) {
-  return <input className={`w-full rounded-xl bg-black/20 ring-apple px-3 py-2 placeholder:opacity-60 ${className}`} {...props} />;
-}
+export const Input = React.forwardRef(function Input({ className, ...props }, ref) {
+  return (
+    <input
+      ref={ref}
+      className={cn(
+        "h-10 w-full rounded-xl border px-3 text-sm outline-none ring-offset-2 focus:ring-2",
+        className
+      )}
+      {...props}
+    />
+  );
+});

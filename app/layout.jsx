@@ -1,36 +1,34 @@
-
 import "./globals.css";
-import Link from "next/link";
 import { Inter } from "next/font/google";
+import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Pleefy",
-  description: "AI-assistent voor sales- en supportgesprekken"
+  title: "Pleefy Dashboard",
+  description: "Realtime gesprek-hulp met AI",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="nl">
       <body className={inter.className}>
-        <div className="min-h-screen flex">
-          <aside className="w-64 p-4 panel ring-apple hidden md:flex md:flex-col gap-2">
-            <div className="text-lg font-semibold mb-4">🅿️ Pleefy</div>
-            <nav className="flex flex-col gap-1">
-              <Link className="px-3 py-2 rounded-lg hover:bg-white/5" href="/">Dashboard</Link>
-              <Link className="px-3 py-2 rounded-lg hover:bg-white/5" href="/conversations">Gesprekken</Link>
-              <Link className="px-3 py-2 rounded-lg hover:bg-white/5" href="/reports">Rapportages</Link>
-              <Link className="px-3 py-2 rounded-lg hover:bg-white/5" href="/onboarding">Onboarding</Link>
-              <Link className="px-3 py-2 rounded-lg hover:bg-white/5" href="/integrations">Integraties</Link>
-              <Link className="px-3 py-2 rounded-lg hover:bg-white/5" href="/settings">Instellingen</Link>
-            </nav>
-            <div className="mt-auto text-xs muted">Stripe/HubSpot vibe</div>
-          </aside>
-          <main className="flex-1 p-4 md:p-8">
-            {children}
-          </main>
-        </div>
+        <header className="border-b">
+          <nav className="container-page flex items-center gap-6 py-4">
+            <Link href="/" className="flex items-center gap-2">
+              <div className="h-8 w-8 rounded-2xl bg-black text-white flex items-center justify-center font-bold">P</div>
+              <span className="font-semibold">Pleefy</span>
+            </Link>
+            <div className="flex items-center gap-4 text-sm text-gray-600">
+              <Link href="/conversations">Gesprekken</Link>
+              <Link href="/reports">Rapportages</Link>
+              <Link href="/onboarding">Onboarding</Link>
+              <Link href="/integrations">Integraties</Link>
+              <Link href="/settings">Instellingen</Link>
+            </div>
+          </nav>
+        </header>
+        <main className="container-page py-8">{children}</main>
       </body>
     </html>
   );

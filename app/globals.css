@@ -1,18 +1,23 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --bg: #0b0b0c;
-  --panel: #0f1012;
-  --muted: #9BA3AF;
-  --text: #E7E9EE;
+  --background: #ffffff;
+  --foreground: #0b0b0b;
 }
+
 html, body {
-  background: var(--bg);
-  color: var(--text);
+  height: 100%;
 }
-.panel { background: var(--panel); }
-.muted { color: var(--muted); }
-.ring-apple { box-shadow: 0 0 0 1px rgba(255,255,255,0.08) inset; }
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.container-page {
+  @apply max-w-7xl mx-auto px-6;
+}
